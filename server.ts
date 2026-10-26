@@ -1,6 +1,5 @@
 import express from "express";
 import path from "path";
-import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import { generateSmartChatbotResponse } from "./src/chatbotEngine.js";
@@ -1104,6 +1103,7 @@ PRINSIP JAWABAN (CHATBOT PADA UMUMNYA):
 // Configure Vite middleware asynchronously to avoid CJS compilation issues with top-level await
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: {
         middlewareMode: true,
@@ -1127,4 +1127,8 @@ async function startServer() {
   });
 }
 
-startServer();
+if (!process.env.VERCEL) {
+  startServer();
+}
+
+export default app;
